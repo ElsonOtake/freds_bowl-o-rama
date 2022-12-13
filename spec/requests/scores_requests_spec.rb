@@ -325,5 +325,30 @@ RSpec.describe '/scores requests', type: :request do
         expect(response.status).to be 422
       end
     end
+
+    describe 'POST /scores' do
+      context 'an unprocessable game - incorrect third throw' do
+        let(:request_body) do
+          {
+            'Nikola Tesla': [
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [9, 0, 10],
+            ],
+          }.to_json
+        end
+  
+        it 'responds with 422 status' do
+          expect(response.status).to be 422
+        end
+      end
+    end
   end
 end
