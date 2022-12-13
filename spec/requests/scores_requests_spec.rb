@@ -176,19 +176,43 @@ RSpec.describe '/scores requests', type: :request do
       end
     end
 
-    context 'an unprocessable game - non array data' do
+    context 'an unprocessable game - invalid frames format' do
       let(:request_body) do
         {
-          'Gordon Mumma': [
-            [10],
-            [3, 7],
-            3, # non array data
-          ],
+          'Tom Rowlands': 10,
+          'Ed Simons': 5,
         }.to_json
       end
 
       it 'responds with 422 status' do
         expect(response.status).to be 422
+      end
+    end
+
+    describe 'POST /scores' do
+      context 'an unprocessable game - more than ten frames' do
+        let(:request_body) do
+          {
+            'Nikola Tesla': [
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10],
+              [10, 10, 10],
+            ],
+          }.to_json
+        end
+  
+        it 'responds with 422 status' do
+          expect(response.status).to be 422
+        end
       end
     end
 
@@ -214,11 +238,15 @@ RSpec.describe '/scores requests', type: :request do
       end
     end
 
-    context 'an unprocessable game - invalid frame format' do
+
+    context 'an unprocessable game - non array data' do
       let(:request_body) do
         {
-          'Tom Rowlands': 10,
-          'Ed Simons': 5,
+          'Gordon Mumma': [
+            [10],
+            [3, 7],
+            3, # non array data
+          ],
         }.to_json
       end
 
