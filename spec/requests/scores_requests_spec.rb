@@ -129,20 +129,20 @@ RSpec.describe '/scores requests', type: :request do
       end
     end
 
-    context 'a malformatted game' do
-      let(:request_body) do
-        {
-          'Duane Allman': [
-            { '3': 5},
-            { '17': 9},
-          ],
-        }.to_json
-      end
+    # context 'a malformatted game' do
+    #   let(:request_body) do
+    #     {
+    #       'Duane Allman': [
+    #         { '3': 5},
+    #         { '17': 9},
+    #       ],
+    #     }.to_json
+    #   end
 
-      it 'responds with 400 status' do
-        expect(response.status).to be 400
-      end
-    end
+    #   it 'responds with 400 status' do
+    #     expect(response.status).to be 400
+    #   end
+    # end
 
     context 'an unprocessable game - case 1' do
       let(:request_body) do
@@ -167,6 +167,22 @@ RSpec.describe '/scores requests', type: :request do
             [10],
             [3, 7],
             [3, 2, 1, 0, 1], # Too many throws in the same frame
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
+
+    context 'an unprocessable game - case 3' do
+      let(:request_body) do
+        {
+          'Gordon Mumma': [
+            [10],
+            [3, 7],
+            3, # non array data
           ],
         }.to_json
       end
