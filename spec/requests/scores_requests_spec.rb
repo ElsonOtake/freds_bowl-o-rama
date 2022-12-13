@@ -254,5 +254,28 @@ RSpec.describe '/scores requests', type: :request do
         expect(response.status).to be 422
       end
     end
+
+    context 'an unprocessable game - wrong number of throws on the last frame' do
+      let(:request_body) do
+        {
+          'Gordon Mumma': [
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [3, 7],
+            [3, 2, 1, 0], # Too many throws in the last frame
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
   end
 end
