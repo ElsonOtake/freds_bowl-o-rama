@@ -1,7 +1,6 @@
 class ScoresController < ApplicationController
   def create
     data = json_payload
-    puts "data #{data}"
     return render json: { error: 'Wrong data format.' }, status: :bad_request if data == []
     scores = {}
     num_frames = 0 # Variable created to check different number of frames
@@ -15,9 +14,12 @@ class ScoresController < ApplicationController
       value.each_with_index do |frame, index|
         return render json: { error: 'Wrong number of throws.' }, status: :unprocessable_entity if (frame.size > 2 && index != 9) ||
           frame.size > 3
+        return render json: { error: 'Invalid number of pins.' }, status: :unprocessable_entity if frame.any? { |pin| !pin.is_a?(Integer)}
         return render json: { error: 'Incorrect number of pins.' }, status: :unprocessable_entity if frame.any? { |pin| pin < 0 || pin > 10 }
         return render json: { error: 'Wrong number of knocked over pins.' }, status: :unprocessable_entity if (frame.sum > 10 &&
           index != 9) || frame.sum > 30
+        return render json: { error: 'Incorrect third throw.' }, status: :unprocessable_entity if frame[0] != 10 &&
+          (frame[0] + frame[1]) != 10 && frame.size == 3
         return render json: { error: 'Missing throw.' }, status: :unprocessable_entity if (frame.sum != 10 && frame.size == 1) || 
           ((frame.sum == 10 || frame.sum == 20) && frame.size == 2 && index == 9)
         scores[key] += frame[0] * extra_points[num_of_throw] # First throw points. Extra points for spare or strike
