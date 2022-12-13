@@ -277,5 +277,37 @@ RSpec.describe '/scores requests', type: :request do
         expect(response.status).to be 422
       end
     end
+
+    context 'an unprocessable game - invalid number of pins (negative number)' do
+      let(:request_body) do
+        {
+          'Herbie Hancock': [
+            [10],
+            [3, 7],
+            [-3, 9], # negative number
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
+
+    context 'an unprocessable game - invalid number of pins (greater than ten)' do
+      let(:request_body) do
+        {
+          'Herbie Hancock': [
+            [10],
+            [3, 17], # greater than ten
+            [3, 9],
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
   end
 end
