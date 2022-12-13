@@ -189,30 +189,28 @@ RSpec.describe '/scores requests', type: :request do
       end
     end
 
-    describe 'POST /scores' do
-      context 'an unprocessable game - more than ten frames' do
-        let(:request_body) do
-          {
-            'Nikola Tesla': [
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10, 10, 10],
-            ],
-          }.to_json
-        end
-  
-        it 'responds with 422 status' do
-          expect(response.status).to be 422
-        end
+    context 'an unprocessable game - more than ten frames' do
+      let(:request_body) do
+        {
+          'Nikola Tesla': [
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10, 10, 10],
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
       end
     end
 
@@ -326,28 +324,65 @@ RSpec.describe '/scores requests', type: :request do
       end
     end
 
-    describe 'POST /scores' do
-      context 'an unprocessable game - incorrect third throw' do
-        let(:request_body) do
-          {
-            'Nikola Tesla': [
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [10],
-              [9, 0, 10],
-            ],
-          }.to_json
-        end
-  
-        it 'responds with 422 status' do
-          expect(response.status).to be 422
-        end
+    context 'an unprocessable game - incorrect third throw' do
+      let(:request_body) do
+        {
+          'Nikola Tesla': [
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [9, 0, 10], # incorrect third throw
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
+
+    context 'an unprocessable game - missed throw' do
+      let(:request_body) do
+        {
+          'Herbie Hancock': [
+            [10],
+            [3], # missed throw
+            [3, 9],
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
+
+    context 'an unprocessable game - missed throw in last frame' do
+      let(:request_body) do
+        {
+          'Nikola Tesla': [
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [10],
+            [9, 1], # missed throw
+          ],
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
       end
     end
   end
