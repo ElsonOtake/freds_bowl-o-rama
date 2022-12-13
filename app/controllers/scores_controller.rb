@@ -7,6 +7,7 @@ class ScoresController < ApplicationController
     data.each_pair do |key, value|
       scores[key] = 0 # Initalize the player score with zero points 
       num_frames = value.size if num_frames == 0 # Initialize the number of frames with the number of frames of the first player
+      return render json: { error: 'Invalid data format.' }, status: :unprocessable_entity unless value.is_a?(Array)
       return render json: { error: 'More than ten frames.' }, status: :unprocessable_entity if value.size > 10
       return render json: { error: 'Different number of frames.' }, status: :unprocessable_entity if value.size != num_frames
       extra_points = Array.new(21, 1) # Array use to calculate the points. Weight for each throw. Add one to strikes and spares.
