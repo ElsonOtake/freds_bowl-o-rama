@@ -213,5 +213,18 @@ RSpec.describe '/scores requests', type: :request do
         expect(response.status).to be 422
       end
     end
+
+    context 'an unprocessable game - invalid frame format' do
+      let(:request_body) do
+        {
+          'Tom Rowlands': 10,
+          'Ed Simons': 5,
+        }.to_json
+      end
+
+      it 'responds with 422 status' do
+        expect(response.status).to be 422
+      end
+    end
   end
 end
