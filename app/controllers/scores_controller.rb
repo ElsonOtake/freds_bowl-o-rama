@@ -4,7 +4,6 @@ class ScoresController < ApplicationController
     puts "data #{data}"
     return render json: { error: 'Wrong data format.' }, status: :bad_request if data == []
     scores = {}
-    winner = ''
     num_frames = 0 # Variable created to check different number of frames
     data.each_pair do |key, value|
       scores[key] = 0 # Initalize the player score with zero points 
@@ -16,14 +15,24 @@ class ScoresController < ApplicationController
       value.each_with_index do |frame, index|
         return render json: { error: 'Wrong number of throws.' }, status: :unprocessable_entity if (frame.size > 2 && index != 9) ||
           frame.size > 3
+        return render json: { error: 'Incorrect number of pins.' }, status: :unprocessable_entity if frame.any? { |pin| pin < 0 || pin > 10 }
         return render json: { error: 'Wrong number of knocked over pins.' }, status: :unprocessable_entity if (frame.sum > 10 &&
           index != 9) || frame.sum > 30
         return render json: { error: 'Missing throw.' }, status: :unprocessable_entity if (frame.sum != 10 && frame.size == 1) || 
           ((frame.sum == 10 || frame.sum == 20) && frame.size == 2 && index == 9)
+        scores[key] += frame[0] * extra_points[num_of_throw]
+        num_of_throw += 1
+        if frame.size > 1
+          scores[key] += frame[1] * extra_points[num_of_throw]
+          num_of_throw += 1
+        end
+        scores[key] += frame[2] if frame.size > 2
+        extra_points[num_of_throw] += 1 if frame.sum == 10
+        extra_points[num_of_throw + 1] += 1 if frame[0] == 10 
       end
     end
     render json: {
-      scores: {},
+      scores: scores,
       winner: '',
     }
   end
