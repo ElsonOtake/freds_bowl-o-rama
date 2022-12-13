@@ -20,20 +20,21 @@ class ScoresController < ApplicationController
           index != 9) || frame.sum > 30
         return render json: { error: 'Missing throw.' }, status: :unprocessable_entity if (frame.sum != 10 && frame.size == 1) || 
           ((frame.sum == 10 || frame.sum == 20) && frame.size == 2 && index == 9)
-        scores[key] += frame[0] * extra_points[num_of_throw]
+        scores[key] += frame[0] * extra_points[num_of_throw] # First throw points. Extra points for spare or strike
         num_of_throw += 1
         if frame.size > 1
-          scores[key] += frame[1] * extra_points[num_of_throw]
+          scores[key] += frame[1] * extra_points[num_of_throw] # Second throw points
           num_of_throw += 1
         end
-        scores[key] += frame[2] if frame.size > 2
-        extra_points[num_of_throw] += 1 if frame.sum == 10
-        extra_points[num_of_throw + 1] += 1 if frame[0] == 10 
+        scores[key] += frame[2] if frame.size > 2 # Third throw (last frame)
+        extra_points[num_of_throw] += 1 if frame.sum == 10 # Add the number of points of the next throw when strike or spare
+        extra_points[num_of_throw + 1] += 1 if frame[0] == 10 # Add the number of points of the second throw when strike
       end
     end
+    winner = scores.select { |key, value| value == scores.values.max}.keys.join(' & ')
     render json: {
       scores: scores,
-      winner: '',
+      winner: winner,
     }
   end
 end
