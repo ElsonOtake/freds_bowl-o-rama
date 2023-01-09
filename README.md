@@ -25,6 +25,9 @@
 
 Fred's Bowl-O-Rama <a name="about-project"></a>
 ==================
+
+[Take home source](https://github.com/rishijain/freds_bowl-o-rama)
+
 Hi there! This is a simple (unfinished) Rails project, a score-keeping app for
 a bowling alley, Fred's Bowl-O-Rama. When you've finished, this app must accept
 POST requests to `/scores`, containing JSON-formatted bowling frames (each
